@@ -1,0 +1,14 @@
+/* CSS Variables */
+
+@theme {
+    --color-info:#005DCB;
+    --color-info-50:#F2F7FC;
+    --color-info-100:#C8E4FF;
+    --color-info-200:#B2CEEF;
+    --color-info-300:#80AEE5;
+    --color-info-400:#4C8EDB;
+    --color-info-500:#2675D3;
+    --color-info-600:#005DCB;
+    --color-info-700:#004FAD;
+    --color-pink:#D21E7A;
+}

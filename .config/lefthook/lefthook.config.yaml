@@ -1,0 +1,24 @@
+pre-commit:
+  parallel: true
+  commands:
+    version:
+      tags: 'version'
+      run: |
+        node -e "
+         const pkg = require('./package.json');
+         const [major, minor, patch] = pkg.version.split('.').map(Number);
+         const next = patch + 1 >= 100
+           ? major + '.' + (minor + 1) + '.0'
+           : major + '.' + minor + '.' + (patch + 1);
+         pkg.version = next;
+         require('fs').writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\n');
+        "
+        git add package.json
+    prettier:
+      tags: formatter
+      glob: '*.{js,ts,jsx,tsx,json}'
+      run: pnpm prettier --write {staged_files}
+    # oxlint:
+    #   tags: linter
+    #   glob: '*.{js,ts,jsx,tsx,json}'
+    #   run: pnpm oxlint

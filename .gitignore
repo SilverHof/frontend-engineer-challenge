@@ -1,0 +1,105 @@
+# ==============================
+# Dependencies / package managers
+# ==============================
+node_modules/
+
+# pnpm
+.pnpm-debug.log*
+pnpm-debug.log*
+
+# If you use a local pnpm store inside the repo (rare, but sometimes configured)
+.pnpm-store/
+
+# ===============
+# Build artifacts
+# ===============
+# Vite / general
+/dist/
+/build/
+/out/
+
+# SSR frameworks sometimes use these
+/.next/
+/.nuxt/
+
+# =================
+# Tooling & caches
+# =================
+# Vite cache
+.vite/
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# SWC cache
+.swc/
+
+# Turborepo cache (if ever added)
+.turbo/
+
+# ==================
+# Tests & coverage
+# ==================
+coverage/
+.nyc_output/
+
+# Vitest/Jest cache
+.vitest/
+
+# Playwright (if ever added)
+playwright-report/
+
+# ==============
+# Logs & reports
+# ==============
+logs/
+*.log
+
+# ============
+# Environment
+# ============
+# Local env files (keep only templates/examples in git)
+.env
+.env.*
+
+!*.example
+!*.example.*
+!*.template
+
+# =====================
+# Editor / IDE settings
+# =====================
+# JetBrains / WebStorm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# ==========
+# OS files
+# ==========
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# =============
+# Misc / local
+# =============
+# Local backups
+*~
+*.bak
+
+# Optional: local HTTPS certs
+*.pem
+*.key
+
+.npmrc
+

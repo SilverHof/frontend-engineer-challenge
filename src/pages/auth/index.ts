@@ -1,0 +1,5 @@
+export * from './auth-index-page'
+export * from './auth-login-page'
+export * from './auth-new-password-page'
+export * from './auth-register-page'
+export * from './auth-reset-password-page'

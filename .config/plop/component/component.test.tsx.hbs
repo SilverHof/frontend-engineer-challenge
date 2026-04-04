@@ -1,0 +1,14 @@
+import { composeStories } from '@storybook/nextjs'
+import { describe, expect, it } from 'vitest'
+import { render } from '@testing-library/react'
+
+import * as stories from './{{name}}.stories' 
+
+const { Default } = composeStories(stories) 
+
+describe('{{pascalCase name}} Tests', () => { 
+  it('{{pascalCase name}} should be render', () => { 
+    const component = render(<Default />) 
+    expect(component.container).toBeDefined() 
+  }) 
+})
