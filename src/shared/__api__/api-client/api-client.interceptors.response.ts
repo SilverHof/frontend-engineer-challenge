@@ -1,28 +1,23 @@
 import type { AxiosError } from 'axios'
 
-import { destroyCookie, parseCookies } from 'nookies'
-
-import { API_CLIENT_ACCESS_TOKEN_COOKIES_NAME } from './api-client.constants.ts'
-import { logoutWithRefresh, refreshTokenRequest } from './api-client.helpers.ts'
-import apiClient from './api-client.instance.ts'
-import { tokenState } from './api-client.interceptors.variables.ts'
+import { logoutWithRefresh, refreshTokenRequest } from './api-client.helpers'
+import apiClient from './api-client.instance'
+import { tokenState } from './api-client.interceptors.variables'
+import { accessTokenAtom, refreshTokenAtom } from './api-client.tokens'
 
 export const responseInterceptor = async (error: AxiosError) => {
-  const cookies = parseCookies()
-
-  const { REFRESH_TOKEN } = cookies
+  const refreshToken = refreshTokenAtom()
 
   const isOnline = typeof window !== 'undefined' && navigator.onLine
-  const isUnauthorized = error.response?.status === 403 || error.response?.status === 401
+  const isUnauthorized = error.response?.status === 401 || error.response?.status === 403
 
   if (isUnauthorized && isOnline) {
-    if (REFRESH_TOKEN) {
+    if (refreshToken) {
       tokenState.isRefreshing = true
 
-      destroyCookie(null, API_CLIENT_ACCESS_TOKEN_COOKIES_NAME, { path: '/' })
+      accessTokenAtom.set(null)
 
-      const tokens = await refreshTokenRequest(REFRESH_TOKEN)
-
+      const tokens = await refreshTokenRequest(refreshToken)
       tokenState.isRefreshing = false
 
       const authorizationHeader = `Bearer ${tokens?.accessToken}`
@@ -40,6 +35,7 @@ export const responseInterceptor = async (error: AxiosError) => {
 
       return apiClient(error.config)
     }
+
     logoutWithRefresh()
   }
 

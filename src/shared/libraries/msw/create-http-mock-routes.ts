@@ -1,4 +1,4 @@
-import { BASE_URL } from '@/shared/config'
+import { VITE_TARGET } from '@/shared/config'
 
 import { HTTP_METHODS_ENUM, type CreateHttpMockRoutesParams } from './_types.ts'
 
@@ -15,7 +15,7 @@ import { HttpMockRoutes } from './http-mock-routes.class.ts'
  * @param params.routes[].errorToEmulate Ошибка для симуляции в ответе
  * @param params.routes[].overrideResponse Пользовательский ответ для переопределения поведения по умолчанию
  * @param params.mockTemplate Шаблон для моковых ответов
- * @param params.overrideBaseUrl Опциональный базовый URL для переопределения BASE_URL
+ * @param params.overrideBaseUrl Опциональный базовый URL для переопределения VITE_TARGET
  *
  * @returns Массив обработчиков запросов MSW
  *
@@ -69,7 +69,7 @@ export const createHttpMockRoutes = ({ routes, mockTemplate, overrideBaseUrl }: 
 
   const createdRoutes = routes.map((route) => {
     const { method, path, type, errorToEmulate, overrideResponse } = route
-    const currentPath = overrideBaseUrl || BASE_URL + path
+    const currentPath = overrideBaseUrl || VITE_TARGET + path
 
     const HTTP_ROUTES = {
       [HTTP_METHODS_ENUM.GET]: httpMockRoutesInstance.get({

@@ -1,8 +1,8 @@
-import { API_MOCKING } from '@/shared/config'
+import { ENV_VARIABLES } from '@/shared/config'
 
 export const withMsw = async (): Promise<void> => {
-  console.log('API_MOCKING', API_MOCKING)
-  if (!API_MOCKING) {
+  console.log('API_MOCKING', ENV_VARIABLES.VITE_API_MOCKING)
+  if (!ENV_VARIABLES.VITE_API_MOCKING) {
     return
   }
 

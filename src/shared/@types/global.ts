@@ -27,15 +27,3 @@ export type BaseProps<Type = unknown> = Type & {
 
 export type As<Props = any> = ElementType<Props>
 
-export interface SelectOption<Type extends number | string | boolean = string> {
-  id: Type
-  label: string
-  disabled?: boolean
-  isHidden?: boolean
-  [key: string]: unknown
-}
-
-export type CustomSelectOption = {
-  id?: string
-  [key: string]: string | number | CustomSelectOption | undefined | boolean
-}

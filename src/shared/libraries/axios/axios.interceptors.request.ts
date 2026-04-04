@@ -2,12 +2,12 @@ import type { AxiosRequestConfig } from 'axios'
 
 import { parseCookies } from 'nookies'
 
-import { TOKEN_PATH } from '@/shared/config'
-
 import { DEFAULT_HEADERS } from './_constants.ts'
 import { refreshTokenRequest } from './_helpers.ts'
 
 import { tokenState } from './axios.interceptors.variables.ts'
+
+const TOKEN_PATH = import.meta.env.VITE_TOKEN_PATH ?? 'token'
 
 export const requestInterceptor = async (config: AxiosRequestConfig) => {
   const cookies = parseCookies()
@@ -16,7 +16,7 @@ export const requestInterceptor = async (config: AxiosRequestConfig) => {
 
   let { access_token } = cookies
 
-  if (config.url?.includes(TOKEN_PATH as string)) {
+  if (config.url?.includes(TOKEN_PATH)) {
     return config
   }
 

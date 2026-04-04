@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import axiosRetry from 'axios-retry'
 
-import { BASE_URL } from '@/shared/config'
+import { VITE_TARGET } from '@/shared/config'
 
 import { setupApiClientInterceptors, setupApiClientInterceptorsWithRetry } from './api-client.interceptors.config.ts'
 
@@ -13,7 +13,7 @@ export type ResponseConfig<TData = any, DData = any> = AxiosResponse<TData, DDat
 export type ResponseErrorConfig<TError = unknown> = AxiosError<TError>
 
 let _config: Partial<RequestConfig> = {
-  baseURL: BASE_URL as string,
+  baseURL: VITE_TARGET,
 }
 
 export const getConfig = () => _config
@@ -84,5 +84,7 @@ client.setConfig = setConfig
 
 clientWithRetry.getConfig = getConfig
 clientWithRetry.setConfig = setConfig
+
+export type Client = typeof client
 
 export default client

@@ -2,16 +2,15 @@ import axios from 'axios'
 
 import { destroyCookie, setCookie } from 'nookies'
 
-import {
-  BASE_URL,
-  KEYCLOAK_CLIENT_ID,
-  KEYCLOAK_REALM,
-  KEYCLOAK_SERVER_URL,
-  KEYCLOAK_SESSION_STORAGE_NAME,
-  REFRESH_TOKEN_GRANT_TYPE,
-  REFRESH_TOKEN_REQUEST_TARGET,
-  REFRESH_TOKEN_SCOPE,
-} from '@/shared/config'
+import { VITE_TARGET } from '@/shared/config'
+
+const KEYCLOAK_CLIENT_ID = import.meta.env.VITE_KEYCLOAK_CLIENT_ID as string
+const KEYCLOAK_REALM = import.meta.env.VITE_KEYCLOAK_REALM as string
+const KEYCLOAK_SERVER_URL = import.meta.env.VITE_KEYCLOAK_SERVER_URL as string
+const KEYCLOAK_SESSION_STORAGE_NAME = import.meta.env.VITE_KEYCLOAK_SESSION_STORAGE_NAME as string
+const REFRESH_TOKEN_GRANT_TYPE = import.meta.env.VITE_REFRESH_TOKEN_GRANT_TYPE as string
+const REFRESH_TOKEN_REQUEST_TARGET = import.meta.env.VITE_REFRESH_TOKEN_REQUEST_TARGET as string
+const REFRESH_TOKEN_SCOPE = import.meta.env.VITE_REFRESH_TOKEN_SCOPE as string
 
 import type { AuthTokens } from './_types.ts'
 import {
@@ -80,7 +79,7 @@ export const refreshTokenRequest = (REFRESH_TOKEN: string) =>
     .catch(() => logout())
 
 export const exchangeCodeForTokens = (code: string, redirectUri: string) =>
-  axios.post<AuthTokens>(`${BASE_URL}/api/v1/auth/token`, { code, redirectUri }).then((res) => {
+  axios.post<AuthTokens>(`${VITE_TARGET}/api/v1/auth/token`, { code, redirectUri }).then((res) => {
     setAuthTokensInCookies(res.data)
     return res.data
   })

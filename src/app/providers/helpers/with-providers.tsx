@@ -1,5 +1,5 @@
-import { WithReatom } from '@/app/providers/ui'
+import { WithHeroUi, WithReatom } from '@/app/providers/ui'
 
 import { composeProviders } from './compose-providers.tsx'
 
-export const WithProviders = composeProviders(WithReatom)
+export const WithProviders = composeProviders(WithReatom, WithHeroUi)

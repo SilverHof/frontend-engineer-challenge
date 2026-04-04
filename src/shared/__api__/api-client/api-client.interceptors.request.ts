@@ -1,21 +1,17 @@
 import type { AxiosRequestConfig } from 'axios'
 
-import { parseCookies } from 'nookies'
+import { API_CLIENT_DEFAULT_HEADERS } from './api-client.constants'
+import { refreshTokenRequest } from './api-client.helpers'
+import { tokenState } from './api-client.interceptors.variables'
+import { accessTokenAtom, refreshTokenAtom } from './api-client.tokens'
 
-import { TOKEN_PATH } from '@/shared/config'
-
-import { API_CLIENT_DEFAULT_HEADERS } from './api-client.constants.ts'
-import { refreshTokenRequest } from './api-client.helpers.ts'
-import { tokenState } from './api-client.interceptors.variables.ts'
+const TOKEN_PATH = import.meta.env.VITE_TOKEN_PATH ?? 'token'
 
 export const requestInterceptor = async (config: AxiosRequestConfig) => {
-  const cookies = parseCookies()
+  let accessToken = accessTokenAtom()
+  const refreshToken = refreshTokenAtom()
 
-  const { REFRESH_TOKEN } = cookies
-
-  let { access_token } = cookies
-
-  if (config.url?.includes(TOKEN_PATH as string)) {
+  if (config.url?.includes(TOKEN_PATH)) {
     return config
   }
 
@@ -25,10 +21,10 @@ export const requestInterceptor = async (config: AxiosRequestConfig) => {
     })
   }
 
-  if (!access_token && REFRESH_TOKEN && typeof window !== 'undefined' && navigator.onLine) {
+  if (!accessToken && refreshToken && typeof window !== 'undefined' && navigator.onLine) {
     tokenState.isRefreshing = true
 
-    const tokens = await refreshTokenRequest(REFRESH_TOKEN)
+    const tokens = await refreshTokenRequest(refreshToken)
     tokenState.isRefreshing = false
 
     for (const request of tokenState.requestQueue) {
@@ -41,7 +37,7 @@ export const requestInterceptor = async (config: AxiosRequestConfig) => {
     tokenState.requestQueue = []
 
     if (tokens?.accessToken) {
-      access_token = tokens.accessToken
+      accessToken = tokens.accessToken
     }
   }
 
@@ -49,8 +45,9 @@ export const requestInterceptor = async (config: AxiosRequestConfig) => {
     ...(config.method === 'GET' && { Pragma: 'no-cache' }),
     ...config.headers,
     ...API_CLIENT_DEFAULT_HEADERS,
-    ...(access_token && { Authorization: `Bearer ${access_token}` }),
+    ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
   }
+
   delete config.params?.sort
 
   return config

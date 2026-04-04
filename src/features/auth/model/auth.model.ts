@@ -1,13 +1,12 @@
-import { atom, withCookieStore } from '@reatom/core'
+import { action } from '@reatom/core'
 
-import {
-  API_CLIENT_ACCESS_TOKEN_COOKIES_NAME,
-  API_CLIENT_REFRESH_TOKEN_COOKIES_NAME,
-} from '@/shared/__api__/api-client/api-client.constants'
+import { ROUTES } from '@/entities/__routes__'
+import { clearAuthTokens } from '@/shared/__api__/api-client/api-client.tokens'
 
-export const accessTokenAtom = atom<string | null>(null, 'accessToken').extend(
-  withCookieStore(API_CLIENT_ACCESS_TOKEN_COOKIES_NAME)
-)
-export const refreshTokenAtom = atom<string | null>(null, 'refreshToken').extend(
-  withCookieStore(API_CLIENT_REFRESH_TOKEN_COOKIES_NAME)
-)
+export { accessTokenAtom, refreshTokenAtom, clearAuthTokens, setAuthTokens } from '@/shared/__api__/api-client/api-client.tokens'
+
+/** Выход из системы: сбрасываем токены и переходим на страницу логина */
+export const logoutAction = action(() => {
+  clearAuthTokens()
+  ROUTES.AUTH.LOGIN.go()
+}, 'logoutAction')
