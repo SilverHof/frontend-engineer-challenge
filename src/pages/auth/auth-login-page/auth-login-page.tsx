@@ -6,23 +6,26 @@ import { AuthLoginForm } from '@/features/auth'
 
 import { ROUTES } from '@/entities/__routes__'
 
+import { useTranslate } from '@/shared/libraries/i18n'
+
 import { authLoginPageVariants } from './auth-login-page.variants'
 
 export const AuthLoginPage = reatomComponent(() => {
+  const i18n = useTranslate()
   const styles = authLoginPageVariants()
   return (
     <AuthLayout
       footer={
         <>
-          Еще не зарегистрированы?{' '}
+          {i18n.t('auth.login.footer_prefix')}{' '}
           <a href={ROUTES.AUTH.REGISTER.path()} className={styles.footerLink()}>
-            Регистрация
+            {i18n.t('auth.login.footer_register')}
           </a>
         </>
       }
     >
-      <h1 className={styles.title()}>Войти в систему</h1>
-      <AuthLoginForm onSuccess={() => ROUTES.ROOT.DASHBOARD.go()} />
+      <h1 className={styles.title()}>{i18n.t('auth.login.page_title')}</h1>
+      <AuthLoginForm />
     </AuthLayout>
   )
 }, 'AuthLoginPage')

@@ -1,13 +1,8 @@
-import axios from 'axios'
+import { ROUTES } from '@/entities/__routes__'
 
-import { VITE_TARGET } from '@/shared/config'
-
-import { clearAuthTokens, setAuthTokens } from './api-client.tokens'
+import { refreshTokens } from '../__resources__'
 import { API_CLIENT_DEFAULT_HEADERS } from './api-client.constants'
-import type { LoginSuccessResponse } from '../__types__/login-success-response'
-
-const REFRESH_URL = `${VITE_TARGET}/api/v1/auth/refresh`
-const LOGIN_URL = '/auth/login'
+import { tokenHandler } from './api-client.tokens'
 
 /**
  * Обновить пару токенов по refresh-токену.
@@ -16,16 +11,10 @@ const LOGIN_URL = '/auth/login'
  */
 export const refreshTokenRequest = async (refreshToken: string) => {
   try {
-    const response = await axios.post<LoginSuccessResponse>(
-      REFRESH_URL,
-      { refreshToken },
-      { headers: API_CLIENT_DEFAULT_HEADERS }
-    )
+    const response = await refreshTokens({ refreshToken }, { headers: API_CLIENT_DEFAULT_HEADERS })
+    tokenHandler.set(response.data)
 
-    const { accessToken, refreshToken: newRefreshToken } = response.data.data
-    setAuthTokens(accessToken, newRefreshToken)
-
-    return response.data.data
+    return response.data
   } catch {
     logoutWithRefresh()
     return null
@@ -34,9 +23,10 @@ export const refreshTokenRequest = async (refreshToken: string) => {
 
 /**
  * Принудительный выход: сбросить токены и перенаправить на страницу входа.
- * Используется из shared-слоя, поэтому навигация через прямой URL-редирект.
+ * Используется из shared-слоя, поэтому навигация через маршруты из entities.
  */
 export const logoutWithRefresh = () => {
-  clearAuthTokens()
-  window.location.replace(LOGIN_URL)
+  tokenHandler.clear()
+  // Достаем из слоя entities, так как определяем маршруты как сущности
+  ROUTES.AUTH.LOGIN.go()
 }

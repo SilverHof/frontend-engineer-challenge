@@ -1,44 +1,39 @@
-import { FormEvent } from 'react'
-import { effect } from '@reatom/core'
-import { reatomComponent, bindField } from '@reatom/react'
+import { SubmitEvent } from 'react'
+import { reatomComponent } from '@reatom/react'
 
 import { Button, Input } from '@heroui/react'
 
 import { authLoginForm } from '@/features/auth'
 
 import { ROUTES } from '@/entities/__routes__'
-import { authRequests } from '@/entities/auth'
 
-export interface AuthLoginFormProps {
-  onSuccess?: () => void
-}
+import { useTranslate } from '@/shared/libraries/i18n'
+import { bindFieldController } from '@/shared/libraries/reatom'
 
-export const AuthLoginForm = reatomComponent<AuthLoginFormProps>(({ onSuccess }) => {
-  const onSubmit = async (event: FormEvent) => {
+export const AuthLoginForm = reatomComponent(() => {
+  const i18n = useTranslate()
+
+  const onSubmit = async (event: SubmitEvent) => {
     event.preventDefault()
     authLoginForm.submit()
   }
 
-  effect(() => {
-    if (authRequests.login.status().isFulfilled) {
-      onSuccess?.()
-    }
-  })
-
   return (
     <form onSubmit={onSubmit} className='flex flex-col gap-2'>
       <Input
-        label='Введите e-mail'
+        label={i18n.t('auth.login.email_label')}
         variant='underlined'
+        color='primary'
         isDisabled={!authLoginForm.submit.ready()}
-        {...bindField(authLoginForm.fields.email)}
+        {...bindFieldController(authLoginForm.fields.email)}
       />
       <Input
-        label='Введите пароль'
+        label={i18n.t('auth.login.password_label')}
         variant='underlined'
+        color='primary'
         type='password'
         isDisabled={!authLoginForm.submit.ready()}
-        {...bindField(authLoginForm.fields.password)}
+        {...bindFieldController(authLoginForm.fields.password)}
       />
       <Button
         type='submit'
@@ -48,11 +43,11 @@ export const AuthLoginForm = reatomComponent<AuthLoginFormProps>(({ onSuccess })
         isDisabled={!authLoginForm.submit.ready()}
         isLoading={!authLoginForm.submit.ready()}
       >
-        Войти
+        {i18n.t('auth.login.submit')}
       </Button>
       <div className='mt-3 text-center'>
         <a href={ROUTES.AUTH.RESET_PASSWORD.path()} className='text-sm text-[#31A0F0] hover:underline'>
-          Забыли пароль?
+          {i18n.t('auth.login.forgot_password')}
         </a>
       </div>
     </form>

@@ -1,6 +1,15 @@
 {
   "common": {
-    "search": "Поиск"
+    "search": "Поиск",
+    "error_loading_data": "Не удалось загрузить данные",
+    "no_items": "Нет элементов",
+    "delete": "Удалить",
+    "cancel": "Отмена",
+    "deleteSelected": "Удалить выбранные",
+    "invalidDateRange": "Некорректный диапазон дат",
+    "edit": "Редактировать",
+    "password_show": "Показать пароль",
+    "password_hide": "Скрыть пароль"
   },
   "auth": {
     "hub": {
@@ -11,30 +20,71 @@
     },
     "login": {
       "title": "Вход",
+      "page_title": "Войти в систему",
       "email": "Email",
+      "email_label": "Введите e-mail",
       "password": "Пароль",
+      "password_label": "Введите пароль",
       "submit": "Войти",
       "to_register": "Нет аккаунта? Зарегистрироваться",
-      "forgot_password": "Забыли пароль?"
+      "forgot_password": "Забыли пароль?",
+      "footer_prefix": "Еще не зарегистрированы?",
+      "footer_register": "Регистрация"
     },
     "register": {
       "title": "Регистрация",
+      "page_title": "Регистрация в системе",
       "email": "Email",
+      "email_label": "Введите e-mail",
       "password": "Пароль",
+      "password_label": "Введите пароль",
+      "confirm_password_label": "Повторите пароль",
       "submit": "Зарегистрироваться",
-      "to_login": "Уже есть аккаунт? Войти"
+      "redirecting": "Перенаправляем…",
+      "to_login": "Уже есть аккаунт? Войти",
+      "footer_prefix": "Уже есть аккаунт?",
+      "footer_login": "Войти",
+      "legal_prefix": "Зарегистрировавшись пользователь принимает условия",
+      "legal_offer": "договора оферты",
+      "legal_and": "и",
+      "legal_privacy": "политики конфиденциальности"
     },
     "reset_password": {
       "title": "Восстановление пароля",
+      "description": "Укажите адрес почты на который был зарегистрирован аккаунт",
       "email": "Email",
-      "submit": "Отправить ссылку",
-      "to_login": "Вернуться ко входу"
+      "email_label": "Введите e-mail",
+      "submit": "Восстановить пароль",
+      "submit_link": "Отправить ссылку",
+      "to_login": "Вернуться ко входу",
+      "success_title": "Проверьте свою почту",
+      "success_description": "Мы отправили на почту письмо с ссылкой для восстановления пароля",
+      "back_to_auth": "Назад в авторизацию"
     },
     "new_password": {
       "title": "Новый пароль",
+      "form_title": "Задайте пароль",
+      "form_description": "Напишите новый пароль, который будете использовать для входа",
       "password": "Новый пароль",
-      "submit": "Сохранить пароль",
-      "to_login": "Перейти ко входу"
+      "password_label": "Введите пароль",
+      "confirm_password_label": "Повторите пароль",
+      "submit": "Изменить пароль",
+      "save_submit": "Сохранить пароль",
+      "to_login": "Перейти ко входу",
+      "success_title": "Пароль был восстановлен",
+      "success_description": "Перейдите на страницу авторизации, чтобы войти в систему с новым паролем",
+      "error_title": "Пароль не был восстановлен",
+      "error_description": "По каким-то причинам мы не смогли изменить ваш пароль. Попробуйте ещё раз через некоторое время.",
+      "retry": "Попробовать заново",
+      "back_to_auth": "Назад в авторизацию"
+    },
+    "validation": {
+      "email_required": "Email обязателен",
+      "email_invalid": "Введите корректный email",
+      "password_required": "Пароль обязателен",
+      "password_min": "Минимум 4 символа",
+      "confirm_required": "Подтверждение пароля обязательно",
+      "passwords_mismatch": "Пароли не совпадают"
     }
   },
   "not_found": {
@@ -42,13 +92,21 @@
     "description": "Запрошенный адрес не существует или был перемещён.",
     "to_home": "На главную"
   },
+  "error_page": {
+    "title": "Ошибка",
+    "description": "Что-то пошло не так. Попробуйте вернуться на главную.",
+    "to_home": "На главную"
+  },
   "root": {
     "title": "Главная",
-    "description": "Корневой раздел приложения."
+    "description": "Корневой раздел приложения.",
+    "index_placeholder": "Главная страница"
   },
   "dashboard": {
     "title": "Панель",
-    "description": "Обзор и быстрые действия."
+    "description": "Обзор и быстрые действия.",
+    "placeholder": "Панель управления",
+    "logout": "Выйти"
   },
   "errors": {
     "default": "Произошла ошибка",
@@ -62,5 +120,138 @@
     "502": "Ошибка сервера",
     "503": "Сервис недоступен",
     "504": "Время ожидания ответа истекло"
+  },
+  "meets": {
+    "title": "Встречи",
+    "add": "Добавить встречу",
+    "columns": {
+      "name": "Название",
+      "status": "Статус",
+      "start": "Начало",
+      "end": "Конец"
+    },
+    "deleteModal": {
+      "title": "Удалить встречу?",
+      "message": "Это действие нельзя отменить."
+    },
+    "deleteSingleModal": {
+      "title": "Удалить встречу?",
+      "message": "Это действие нельзя отменить."
+    },
+    "delete": {
+      "success": "Встреча удалена",
+      "error": "Не удалось удалить встречу"
+    },
+    "deleteMass": {
+      "success": "Встречи удалены",
+      "error": "Не удалось удалить встречи"
+    },
+    "create": {
+      "success": "Встреча создана",
+      "error": "Не удалось создать встречу"
+    },
+    "transcription_result": "Транскрипция",
+    "summary_result": "Саммари",
+    "transcription_error": {
+      "title": "Ошибка транскрипции"
+    },
+    "summarization_error": {
+      "title": "Ошибка саммари"
+    },
+    "transcription_in_progress": {
+      "title": "Идёт транскрипция…"
+    },
+    "transcription_not_available": {
+      "title": "Транскрипция пока недоступна"
+    },
+    "transcription_not_available_for_summarization": {
+      "title": "Для саммари нужна транскрипция"
+    },
+    "summarization_in_progress": {
+      "title": "Идёт создание саммари…"
+    },
+    "summarization_not_available": {
+      "title": "Саммари пока недоступно"
+    },
+    "statuses": {
+      "FOUND": "Найдена",
+      "PREPARING": "Подготовка",
+      "TIME_CHANGED": "Время изменено",
+      "RECORDING": "Запись",
+      "RECORDING_PAUSED": "Пауза",
+      "RECORDING_COMPLETED": "Запись завершена",
+      "UPLOADING": "Загрузка",
+      "POSTPROCESSING": "Обработка",
+      "EXTERNAL_UPLOAD": "Внешняя загрузка",
+      "COMPLETED": "Завершена",
+      "ERROR": "Ошибка",
+      "TRANSCRIBE": "Транскрипция",
+      "TRANSCRIBE_COMPLETED": "Транскрипция готова",
+      "TRANSCRIBE_ERROR": "Ошибка транскрипции",
+      "SUMMARY": "Саммари",
+      "SUMMARY_COMPLETED": "Саммари готово",
+      "SUMMARY_ERROR": "Ошибка саммари"
+    },
+    "show": {
+      "backToList": "К списку встреч",
+      "title": "Встреча",
+      "transcribeButton": "Транскрибировать",
+      "summarizeButton": "Саммари",
+      "noValue": "—",
+      "tabs": {
+        "info": "Информация",
+        "transcription": "Транскрипция",
+        "summarization": "Саммари"
+      },
+      "fields": {
+        "name": "Название",
+        "author": "Автор",
+        "start": "Начало",
+        "end": "Конец",
+        "duration": "Длительность",
+        "meetUrl": "Ссылка на встречу",
+        "videoUrl": "Видео"
+      },
+      "additionalInfo": {
+        "title": "Дополнительно",
+        "integration": "Интеграция",
+        "recorderService": "Сервис записи",
+        "storage": "Хранилище",
+        "transcription": "Транскрипция",
+        "summarization": "Саммари"
+      }
+    }
+  },
+  "meet_create": {
+    "fields": {
+      "name": "Название",
+      "storage_config": "Конфигурация хранилища",
+      "transcription": "Транскрипция",
+      "transcription_description": "Автоматическая расшифровка записи",
+      "transcription_price": "Платно",
+      "summarization": "Саммари",
+      "summarization_description": "Краткое содержание встречи",
+      "summarization_price": "Платно",
+      "summarization_requires_transcription": "Сначала нужна транскрипция"
+    },
+    "placeholders": {
+      "select_storage": "Выберите хранилище"
+    },
+    "buttons": {
+      "cancel": "Отмена",
+      "save": "Сохранить"
+    },
+    "validation": {
+      "start_time_past": "Время начала не может быть в прошлом",
+      "end_time_before_start": "Окончание должно быть позже начала"
+    }
+  },
+  "meet_edit": {
+    "title": "Редактирование встречи",
+    "delete": "Удалить",
+    "edit": {
+      "success": "Встреча обновлена",
+      "error": "Не удалось обновить встречу"
+    }
   }
 }

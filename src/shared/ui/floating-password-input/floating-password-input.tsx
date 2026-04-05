@@ -1,6 +1,8 @@
 import { ComponentProps, useState } from 'react'
 import { reatomComponent } from '@reatom/react'
 
+import { useTranslate } from '@/shared/libraries/i18n'
+
 import { floatingPasswordInputVariants } from './floating-password-input.variants'
 
 export interface FloatingPasswordInputProps extends ComponentProps<'input'> {
@@ -9,6 +11,7 @@ export interface FloatingPasswordInputProps extends ComponentProps<'input'> {
 }
 
 export const FloatingPasswordInput = reatomComponent<FloatingPasswordInputProps>((props) => {
+  const { t } = useTranslate()
   const { label, error, id, value, onFocus, onBlur, className, ...inputProps } = props
   const [focused, setFocused] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -45,7 +48,7 @@ export const FloatingPasswordInput = reatomComponent<FloatingPasswordInputProps>
           type='button'
           tabIndex={-1}
           onClick={() => setVisible((v) => !v)}
-          aria-label={visible ? 'Скрыть пароль' : 'Показать пароль'}
+          aria-label={visible ? t('common.password_hide') : t('common.password_show')}
           className={styles.toggleButton()}
         >
           {visible ? (

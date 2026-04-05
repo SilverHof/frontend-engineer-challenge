@@ -1,5 +1,4 @@
 export * from './api-client.helpers'
-export * from './api-client.types'
 export * from './api-client.constants'
 export * from './api-client.instance'
 export * from './api-client.interceptors.config'

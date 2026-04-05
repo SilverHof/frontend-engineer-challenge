@@ -1,29 +1,24 @@
-import { FormEvent } from 'react'
-import { effect } from '@reatom/core'
-import { reatomComponent, bindField } from '@reatom/react'
+import { SubmitEvent } from 'react'
+import { reatomComponent } from '@reatom/react'
 
 import { Button, Input } from '@heroui/react'
 
-import { authRequests } from '@/entities/auth'
+import { useTranslate } from '@/shared/libraries/i18n'
+import { bindFieldController } from '@/shared/libraries/reatom'
 
 import { authRequestPasswordResetForm } from '../../model/auth-request-password-reset.form'
 
 export interface AuthRequestPasswordResetFormProps {
-  onSuccess?: () => void
   onBack?: () => void
 }
 
 export const AuthRequestPasswordResetForm = reatomComponent<AuthRequestPasswordResetFormProps>((props) => {
-  const handleSubmit = async (event: FormEvent) => {
+  const i18n = useTranslate()
+
+  const onSubmit = async (event: SubmitEvent) => {
     event.preventDefault()
     authRequestPasswordResetForm.submit()
   }
-
-  effect(() => {
-    if (authRequests.requestPasswordReset.status().isFulfilled) {
-      props.onSuccess?.()
-    }
-  })
 
   return (
     <div className='flex flex-col gap-8'>
@@ -39,21 +34,22 @@ export const AuthRequestPasswordResetForm = reatomComponent<AuthRequestPasswordR
             </svg>
           </button>
         )}
-        <h1 className='mb-2 text-[26px] font-bold text-[#1E2027]'>Восстановление пароля</h1>
-        <p className='text-sm text-[#6B7280]'>Укажите адрес почты на который был зарегистрирован аккаунт</p>
+        <h1 className='mb-2 text-[26px] font-bold text-[#1E2027]'>{i18n.t('auth.reset_password.title')}</h1>
+        <p className='text-sm text-[#6B7280]'>{i18n.t('auth.reset_password.description')}</p>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate className='flex flex-col gap-2'>
+      <form onSubmit={onSubmit} noValidate className='flex flex-col gap-2'>
         <Input
-          label='Введите e-mail'
+          label={i18n.t('auth.reset_password.email_label')}
           type='email'
           autoComplete='email'
+          color='primary'
           isDisabled={!authRequestPasswordResetForm.submit.ready()}
-          {...bindField(authRequestPasswordResetForm.fields.email)}
+          {...bindFieldController(authRequestPasswordResetForm.fields.email)}
         />
 
         <Button type='submit' isLoading={!authRequestPasswordResetForm.submit.ready()} className='mt-6'>
-          Восстановить пароль
+          {i18n.t('auth.reset_password.submit')}
         </Button>
       </form>
     </div>

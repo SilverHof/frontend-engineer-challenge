@@ -3,7 +3,7 @@ import { Chip, ChipProps } from '@ant-core/ui'
 
 import { Nullable } from '@/shared/@types'
 import { MeetJsonldMeetReadCollectionStatusEnum as MeetStatusEnumKey } from '@/shared/__api__'
-import { useTranslate } from '@/shared/libraries/i18n'
+import { type MessageKeys, useTranslate } from '@/shared/libraries/i18n'
 
 export interface MeetStatusProps {
   status?: Nullable<MeetStatusEnumKey>
@@ -51,7 +51,7 @@ export const MeetStatus = (props: MeetStatusProps) => {
         ? { classNames: { content: 'text-info bg-info-100 font-font-medium', base: 'bg-info-100 h-7' } }
         : { classNames: { content: 'font-font-medium', base: 'h-7' } })}
     >
-      {t(`meets.statuses.${props.status || 'FOUND'}`)}
+      {t(`meets.statuses.${props.status || 'FOUND'}` as MessageKeys)}
     </Chip>
   )
 }

@@ -1,7 +1,9 @@
-import { reatomForm, withCallHook } from '@reatom/core'
+import { reatomForm, withCallHook, wrap } from '@reatom/core'
 
 import { ROUTES } from '@/entities/__routes__'
 import { authRequests } from '@/entities/auth'
+
+import { tokenHandler } from '@/shared/__api__/api-client/api-client.tokens'
 
 import { authLoginSchema } from './auth.validation'
 
@@ -12,17 +14,18 @@ export const authLoginForm = reatomForm(
   },
   {
     name: 'authLoginForm',
-    // schema: authLoginSchema,
+    schema: authLoginSchema,
     validateOnChange: true,
     onSubmit: async (formValues) => {
-      console.log('formValues', formValues)
-      return await authRequests.login(formValues)
+      const response = await wrap(authRequests.login(formValues))
+      return response
     },
   }
 )
 
 authLoginForm.submit.onFulfill.extend(
-  withCallHook(() => {
+  withCallHook(({ payload }) => {
+    tokenHandler.set(payload.data)
     ROUTES.ROOT.DASHBOARD.go()
   })
 )

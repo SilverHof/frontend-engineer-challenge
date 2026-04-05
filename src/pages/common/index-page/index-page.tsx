@@ -1,10 +1,3 @@
-import { reatomForm } from '@reatom/core'
-import { reatomComponent, bindField } from '@reatom/react'
+import { reatomComponent } from '@reatom/react'
 
-const form = reatomForm({
-  name: '',
-})
-
-export const IndexPage = reatomComponent(() => {
-  return <input type='text' {...bindField(form.fields.name)} />
-}, 'IndexPage')
+export const IndexPage = reatomComponent(() => null, 'IndexPage')

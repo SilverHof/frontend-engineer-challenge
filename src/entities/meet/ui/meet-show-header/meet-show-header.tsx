@@ -57,7 +57,7 @@ export const MeetShowHeader = (props: MeetShowHeaderProps) => {
         className={styles.backButton()}
       >
         <ChevronLeft className={styles.backButtonIcon()} />
-        <span className={styles.backButtonText()}>{t('subscriptions.payment.back_to_payments')}</span>
+        <span className={styles.backButtonText()}>{t('meets.show.backToList')}</span>
       </CustomButton>
       <div className={styles.headerRow()}>
         <div className={styles.titleGroup()}>
