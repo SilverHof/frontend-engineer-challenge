@@ -1,6 +1,7 @@
+import { RouteAtom } from "@reatom/core"
 import { ReactNode } from "react"
 
 export type AppRouterItem = {
-  route: { exact: () => boolean }
+  route: RouteAtom
   element: ReactNode
 }

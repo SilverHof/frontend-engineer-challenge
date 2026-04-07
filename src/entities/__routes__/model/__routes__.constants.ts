@@ -1,6 +1,11 @@
 import {
   authLoginRoute,
   authNewPasswordRoute,
+  authRecoveryCheckEmailRoute,
+  authRecoveryErrorRoute,
+  authRecoveryNewPasswordRoute,
+  authRecoveryRoute,
+  authRecoverySuccessRoute,
   authRegisterRoute,
   authResetPasswordRoute,
   authRootRoute,
@@ -26,6 +31,11 @@ export const ROUTES = {
     REGISTER: authRegisterRoute,
     RESET_PASSWORD: authResetPasswordRoute,
     NEW_PASSWORD: authNewPasswordRoute,
+    RECOVERY: authRecoveryRoute,
+    RECOVERY_NEW_PASSWORD: authRecoveryNewPasswordRoute,
+    RECOVERY_CHECK_EMAIL: authRecoveryCheckEmailRoute,
+    RECOVERY_SUCCESS: authRecoverySuccessRoute,
+    RECOVERY_ERROR: authRecoveryErrorRoute,
   },
   ROOT: {
     INDEX: rootRoute,

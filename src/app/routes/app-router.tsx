@@ -1,35 +1,63 @@
-import { urlAtom } from '@reatom/core'
+import { effect, urlAtom } from '@reatom/core'
+import { reatomComponent } from '@reatom/react'
 
-import { useAtom } from '@/shared/libraries/reatom'
+import { NotFoundPage } from '@/pages/common'
+
+import { ROUTES } from '@/entities/__routes__'
+
+import { accessTokenAtom } from '@/shared/__api__/api-client/api-client.tokens'
+import { ENV_VARIABLES } from '@/shared/config'
 
 import { APP_ROUTER } from './app-router.constants'
 
-export const AppRouter = () => {
-  // Подписываемся на изменения URL для реактивного обновления
-  const [url] = useAtom(urlAtom)
+const isProtectedRootZone = (pathname: string) => pathname === '/root' || pathname.startsWith('/root/')
 
-  // Используем computed через useAtom для проверки всех маршрутов
-  // Это создает реактивную подписку на изменения каждого route.exact()
-  const [matchedRouteIndex] = useAtom(
-    () => {
-      // Проверяем каждый маршрут в порядке приоритета
-      for (let i = 0; i < APP_ROUTER.length; i++) {
-        if (APP_ROUTER[i].route.exact()) {
-          return i
-        }
-      }
-      return -1
-    },
-    // Зависимости: все маршруты и URL
-    [url.pathname, url.search, url.hash, ...APP_ROUTER.map((config) => config.route)]
-  )
+const shouldSendAuthedUserToDashboard = (pathname: string) =>
+  pathname === '/' || pathname === '/root' || pathname === '/auth' || pathname === '/auth/login'
 
-  // Если найден совпадающий маршрут, возвращаем соответствующий элемент
-  if (matchedRouteIndex >= 0 && matchedRouteIndex < APP_ROUTER.length) {
-    return APP_ROUTER[matchedRouteIndex].element
+const shouldSendGuestToLogin = (pathname: string) => isProtectedRootZone(pathname) || pathname === '/'
+
+export const AppRouter = reatomComponent(() => {
+  const url = urlAtom()
+
+  let matchedRouteIndex = -1
+  for (let index = 0; index < APP_ROUTER.length; index++) {
+    if (APP_ROUTER[index].route.exact()) {
+      matchedRouteIndex = index
+      break
+    }
   }
 
-  if (import.meta.env.DEV) {
+  effect(() => {
+    const pathname = urlAtom().pathname || '/'
+
+    let index = -1
+    for (let i = 0; i < APP_ROUTER.length; i++) {
+      if (APP_ROUTER[i].route.exact()) {
+        index = i
+        break
+      }
+    }
+    if (index < 0) return
+
+    const isAuthenticated = Boolean(accessTokenAtom())
+
+    if (isAuthenticated && shouldSendAuthedUserToDashboard(pathname)) {
+      ROUTES.ROOT.DASHBOARD.go()
+    }
+
+    if (!isAuthenticated && shouldSendGuestToLogin(pathname)) {
+      ROUTES.AUTH.LOGIN.go()
+    }
+  })
+
+  if (matchedRouteIndex >= 0 && matchedRouteIndex < APP_ROUTER.length) {
+    const currentRouteElement = APP_ROUTER[matchedRouteIndex].element
+
+    return currentRouteElement
+  }
+
+  if (ENV_VARIABLES.VITE_ENVIRONMENT === 'development') {
     return (
       <div style={{ padding: 24 }}>
         <h2>Route not found</h2>
@@ -40,5 +68,5 @@ export const AppRouter = () => {
     )
   }
 
-  return null
-}
+  return <NotFoundPage />
+}, 'AppRouter')

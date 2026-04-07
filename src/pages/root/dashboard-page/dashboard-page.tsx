@@ -6,12 +6,7 @@ import { logoutAction } from '@/features/auth'
 
 import { ROUTES } from '@/entities/__routes__'
 
-import {
-  accessTokenAtom,
-  expiresInAtom,
-  refreshTokenAtom,
-  tokenTypeAtom,
-} from '@/shared/__api__/api-client/api-client.tokens'
+import { tokenHandler } from '@/shared/__api__/api-client/api-client.tokens'
 import { useTranslate } from '@/shared/libraries/i18n'
 
 import { dashboardPageVariants } from './dashboard-page.variants'
@@ -20,10 +15,10 @@ export const DashboardPage = reatomComponent(() => {
   const i18n = useTranslate()
   const styles = dashboardPageVariants()
 
-  console.log('accessToken', accessTokenAtom())
-  console.log('refreshToken', refreshTokenAtom())
-  console.log('expiresIn', expiresInAtom())
-  console.log('tokenType', tokenTypeAtom())
+  const logout = () => {
+    logoutAction()
+    tokenHandler.clear()
+  }
 
   return (
     <div className={styles.root()}>
@@ -36,7 +31,7 @@ export const DashboardPage = reatomComponent(() => {
           color='danger'
           variant='flat'
           className={styles.logoutButton()}
-          onPress={() => logoutAction()}
+          onPress={logout}
         >
           {i18n.t('dashboard.logout')}
         </Button>

@@ -1,9 +1,12 @@
 import {
   AuthIndexPage,
   AuthLoginPage,
-  AuthNewPasswordPage,
+  AuthRecoveryCheckEmailPage,
+  AuthRecoveryErrorPage,
+  AuthRecoveryNewPasswordPage,
+  AuthRecoveryPage,
+  AuthRecoverySuccessPage,
   AuthRegisterPage,
-  AuthResetPasswordPage,
 } from '@/pages/auth'
 import { ErrorPage, IndexPage, NotFoundPage } from '@/pages/common'
 import { DashboardPage, RootIndexPage } from '@/pages/root'
@@ -38,12 +41,24 @@ export const APP_ROUTER: AppRouterItem[] = [
     element: <AuthRegisterPage />,
   },
   {
-    route: ROUTES.AUTH.RESET_PASSWORD,
-    element: <AuthResetPasswordPage />,
+    route: ROUTES.AUTH.RECOVERY,
+    element: <AuthRecoveryPage />,
   },
   {
-    route: ROUTES.AUTH.NEW_PASSWORD,
-    element: <AuthNewPasswordPage />,
+    route: ROUTES.AUTH.RECOVERY_CHECK_EMAIL,
+    element: <AuthRecoveryCheckEmailPage />,
+  },
+  {
+    route: ROUTES.AUTH.RECOVERY_NEW_PASSWORD,
+    element: <AuthRecoveryNewPasswordPage />,
+  },
+  {
+    route: ROUTES.AUTH.RECOVERY_SUCCESS,
+    element: <AuthRecoverySuccessPage />,
+  },
+  {
+    route: ROUTES.AUTH.RECOVERY_ERROR,
+    element: <AuthRecoveryErrorPage />,
   },
   {
     route: ROUTES.ROOT.INDEX,

@@ -1,9 +1,12 @@
-import { reatomForm, withCallHook, wrap } from '@reatom/core'
+import { atom, reatomForm, withCallHook, wrap } from '@reatom/core'
+import { AxiosError } from 'axios'
 
 import { ROUTES } from '@/entities/__routes__'
 import { authRequests } from '@/entities/auth'
 
 import { authResetPasswordSchema } from './auth.validation'
+
+export const authResetPasswordFormError = atom<AxiosError | null>(null)
 
 export const authResetPasswordForm = reatomForm(
   {
@@ -30,5 +33,6 @@ authResetPasswordForm.submit.onFulfill.extend(
 authResetPasswordForm.submit.onReject.extend(
   withCallHook(({ error }) => {
     console.error(error)
+    authResetPasswordFormError.set(error instanceof AxiosError ? error : null)
   })
 )
