@@ -2,6 +2,19 @@
 
 Frontend-реализация auth-флоу Orbitto под backend по OpenAPI-контракту.
 
+## Выбранный backend
+
+- **Backend fork (мой)**: [SilverHof/engineer-challenge](https://github.com/SilverHof/engineer-challenge)
+- **Upstream fork (база)**: [azarenkov/engineer-challenge](https://github.com/azarenkov/engineer-challenge)
+
+Что сделано в backend fork:
+- **Доработан backend** (auth-сервис на Rust) под нужды челленджа и реального использования.
+- **Добавлена генерация OpenAPI (`openapi.yaml`)**, чтобы фронтенд опирался на контракт и мог автоматически обновлять типы/клиент.
+
+Почему это важно для фронтенда:
+- контракт становится “источником истины” для интеграции
+- можно использовать codegen (в этом репозитории — **Kubb**) для генерации `__types__`, `__schemas__`, `__resources__`, `__mocks__`
+
 Решение покрывает 3 пользовательских сценария:
 - регистрация
 - авторизация
