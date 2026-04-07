@@ -32,6 +32,29 @@ export const tokenHandler = {
     refreshTokenAtom.set(null)
     tokenTypeAtom.set(null)
     expiresInAtom.set(null)
+
+    // Дублируем "жёсткое" удаление на случай, если куки были выставлены сервером
+    // или окружение не поддерживает CookieStore API корректно.
+    if (typeof document !== 'undefined') {
+      const expire = (name: string) => {
+        document.cookie = `${name}=; Max-Age=0; path=/`
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`
+      }
+
+      expire(API_CLIENT_ACCESS_TOKEN_COOKIES_NAME)
+      expire(API_CLIENT_REFRESH_TOKEN_COOKIES_NAME)
+      expire(API_CLIENT_TOKEN_TYPE_COOKIES_NAME)
+      expire(API_CLIENT_EXPIRES_IN_COOKIES_NAME)
+    }
+
+    // Cookie Store API (если доступен) — тоже пробуем удалить явным delete.
+    const cookieStoreAny = (globalThis as any).cookieStore
+    if (cookieStoreAny?.delete) {
+      cookieStoreAny.delete(API_CLIENT_ACCESS_TOKEN_COOKIES_NAME).catch?.(() => undefined)
+      cookieStoreAny.delete(API_CLIENT_REFRESH_TOKEN_COOKIES_NAME).catch?.(() => undefined)
+      cookieStoreAny.delete(API_CLIENT_TOKEN_TYPE_COOKIES_NAME).catch?.(() => undefined)
+      cookieStoreAny.delete(API_CLIENT_EXPIRES_IN_COOKIES_NAME).catch?.(() => undefined)
+    }
   },
   set: ({ accessToken, refreshToken, expiresIn, tokenType }: TokenPair) => {
     accessTokenAtom.set(accessToken)

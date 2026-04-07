@@ -2,6 +2,7 @@ import { ROUTES } from '@/entities/__routes__'
 
 import { refreshTokens } from '../__resources__'
 import { API_CLIENT_DEFAULT_HEADERS } from './api-client.constants'
+import { clientRaw } from './api-client.instance'
 import { tokenHandler } from './api-client.tokens'
 
 /**
@@ -11,7 +12,7 @@ import { tokenHandler } from './api-client.tokens'
  */
 export const refreshTokenRequest = async (refreshToken: string) => {
   try {
-    const response = await refreshTokens({ refreshToken }, { headers: API_CLIENT_DEFAULT_HEADERS })
+    const response = await refreshTokens({ refreshToken }, { headers: API_CLIENT_DEFAULT_HEADERS, client: clientRaw })
     tokenHandler.set(response.data)
 
     return response.data

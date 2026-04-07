@@ -10,13 +10,6 @@ import { ENV_VARIABLES } from '@/shared/config'
 
 import { APP_ROUTER } from './app-router.constants'
 
-const isProtectedRootZone = (pathname: string) => pathname === '/root' || pathname.startsWith('/root/')
-
-const shouldSendAuthedUserToDashboard = (pathname: string) =>
-  pathname === '/' || pathname === '/root' || pathname === '/auth' || pathname === '/auth/login'
-
-const shouldSendGuestToLogin = (pathname: string) => isProtectedRootZone(pathname) || pathname === '/'
-
 export const AppRouter = reatomComponent(() => {
   const url = urlAtom()
 
@@ -28,25 +21,27 @@ export const AppRouter = reatomComponent(() => {
     }
   }
 
+  const isProtectedRootZone = (pathname: string) => {
+    return pathname === '/root' || pathname.startsWith('/root/')
+  }
+
+  const shouldRedirectToRoot = (pathname: string) => {
+    return pathname === '/' || pathname === '/root' || pathname === '/auth' || pathname === '/auth/login'
+  }
+
+  const shouldRedirectToAuth = (pathname: string) => {
+    return isProtectedRootZone(pathname) || pathname === '/'
+  }
+
   effect(() => {
     const pathname = urlAtom().pathname || '/'
-
-    let index = -1
-    for (let i = 0; i < APP_ROUTER.length; i++) {
-      if (APP_ROUTER[i].route.exact()) {
-        index = i
-        break
-      }
-    }
-    if (index < 0) return
-
     const isAuthenticated = Boolean(accessTokenAtom())
 
-    if (isAuthenticated && shouldSendAuthedUserToDashboard(pathname)) {
+    if (isAuthenticated && shouldRedirectToRoot(pathname)) {
       ROUTES.ROOT.DASHBOARD.go()
     }
 
-    if (!isAuthenticated && shouldSendGuestToLogin(pathname)) {
+    if (!isAuthenticated && shouldRedirectToAuth(pathname)) {
       ROUTES.AUTH.LOGIN.go()
     }
   })
