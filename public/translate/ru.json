@@ -98,7 +98,7 @@
       "email_required": "Email обязателен",
       "email_invalid": "Введите корректный email",
       "password_required": "Пароль обязателен",
-      "password_min": "Минимум 4 символа",
+      "password_min": "Минимум 8 символов",
       "confirm_required": "Подтверждение пароля обязательно",
       "passwords_mismatch": "Пароли не совпадают"
     }

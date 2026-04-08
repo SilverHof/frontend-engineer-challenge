@@ -1,4 +1,4 @@
-import { atom, reatomForm, withCallHook, wrap } from '@reatom/core'
+import { atom, reatomForm, withCallHook, withSearchParams, wrap } from '@reatom/core'
 import { AxiosError } from 'axios'
 
 import { ROUTES } from '@/entities/__routes__'
@@ -6,7 +6,9 @@ import { authRequests } from '@/entities/auth'
 
 import { authResetPasswordSchema } from './auth.validation'
 
-export const authResetPasswordFormError = atom<AxiosError | null>(null)
+const authResetPasswordToken = atom('', 'authResetPasswordToken').extend(
+  withSearchParams('token', { parse: (value) => value, serialize: (value) => value })
+)
 
 export const authResetPasswordForm = reatomForm(
   {
@@ -17,7 +19,12 @@ export const authResetPasswordForm = reatomForm(
     name: 'authResetPasswordForm',
     schema: authResetPasswordSchema,
     onSubmit: async (formValues) => {
-      const token = ''
+      const token = authResetPasswordToken()
+
+      if (!token) {
+        throw new AxiosError('Token is required')
+      }
+
       const response = await wrap(authRequests.resetPassword({ newPassword: formValues.password, token: token }))
       return response
     },
@@ -26,13 +33,12 @@ export const authResetPasswordForm = reatomForm(
 
 authResetPasswordForm.submit.onFulfill.extend(
   withCallHook(() => {
-    ROUTES.AUTH.LOGIN.go()
+    ROUTES.AUTH.RECOVERY_SUCCESS.go()
   })
 )
 
 authResetPasswordForm.submit.onReject.extend(
-  withCallHook(({ error }) => {
-    console.error(error)
-    authResetPasswordFormError.set(error instanceof AxiosError ? error : null)
+  withCallHook(() => {
+    ROUTES.AUTH.RECOVERY_ERROR.go()
   })
 )

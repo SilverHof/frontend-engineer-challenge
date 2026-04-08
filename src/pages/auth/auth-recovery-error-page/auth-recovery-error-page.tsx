@@ -19,7 +19,7 @@ export const AuthRecoveryErrorPage = reatomComponent(() => {
         <a href={ROUTES.AUTH.LOGIN.path()} className={styles.link()}>
           {i18n.t('auth.recovery_error.to_login')}
         </a>
-        <a href={ROUTES.AUTH.RESET_PASSWORD.path()} className={styles.linkGhost()}>
+        <a href={ROUTES.AUTH.RECOVERY.path()} className={styles.linkGhost()}>
           {i18n.t('auth.recovery_error.to_reset_password')}
         </a>
       </div>
