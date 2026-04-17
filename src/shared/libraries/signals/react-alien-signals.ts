@@ -1,0 +1,250 @@
+/**
+ *
+ * React Alien Signals is a **TypeScript** library that provides hooks built on top of [Alien Signals](https://github.com/stackblitz/alien-signals).
+ * It offers a seamless integration with React, ensuring concurrency-safe re-renders without tearing.
+ *
+ * @module reactjs-signal
+ */
+
+import { useCallback, useEffect, useSyncExternalStore } from 'react'
+
+import { computed, effect, signal } from 'alien-signals'
+
+export type TWritableSignal<T> = {
+  (): T
+  (value: T): void
+}
+
+const hydratedMap = new WeakMap<TWritableSignal<any>, WeakSet<TWritableSignal<any>>>()
+
+function getHydratedSet(store: TWritableSignal<any>) {
+  let hydratedSet = hydratedMap.get(store)
+  if (!hydratedSet) {
+    hydratedSet = new WeakSet()
+    hydratedMap.set(store, hydratedSet)
+  }
+  return hydratedSet
+}
+
+/**
+ * Creates a writable Alien Signal.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * countSignal(10); // sets the value to 10
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {T} initialValue - The initial value of the signal.
+ * @returns {TWritableSignal<T>} The created Alien Signal.
+ */
+export const createSignal = signal
+
+/**
+ * Creates a computed Alien Signal based on a getter function.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(1);
+ * const doubleSignal = createComputed(() => countSignal() * 2);
+ * ```
+ *
+ * @template T - The type of the computed value.
+ * @param {() => T} fn - A getter function returning a computed value.
+ * @returns {ISignal<T>} The created computed signal.
+ */
+export const createComputed = computed
+
+/**
+ * Creates a side effect in Alien Signals.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(1);
+ * createEffect(() => {
+ *   console.log('Count is', countSignal());
+ * });
+ * ```
+ *
+ * @template T - The type of the effect value.
+ * @param {() => T} fn - A function that will run whenever its tracked signals update.
+ * @returns {Effect<T>} The created effect object.
+ */
+export const createEffect = effect
+
+/**
+ * React hook returning `[value, setValue]` for a given Alien Signal.
+ * Uses useSyncExternalStore for concurrency-safe re-renders.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * function Counter() {
+ *   const [count, setCount] = useSignal(countSignal);
+ *   return <button onClick={() => setCount(count + 1)}>{count}</button>;
+ * }
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {TWritableSignal<T>} alienSignal - The signal to read/write.
+ * @returns {[T, (val: T | ((oldVal: T) => T)) => void]} A tuple [currentValue, setValue].
+ */
+export function useSignal<T>(alienSignal: TWritableSignal<T>): [T, (val: T | ((oldVal: T) => T)) => void] {
+  const value = useSyncExternalStore(
+    (callback) => {
+      const eff = effect(() => {
+        alienSignal() // track
+        callback()
+      })
+      return () => eff()
+    },
+    () => alienSignal(),
+    () => alienSignal() // server snapshot
+  )
+
+  const setValue = useCallback((val: T | ((oldVal: T) => T)) => {
+    if (typeof val === 'function') {
+      alienSignal((val as (oldVal: T) => T)(alienSignal()))
+    } else {
+      alienSignal(val)
+    }
+  }, [])
+
+  return [value, setValue]
+}
+
+/**
+ * React hook returning only the current value of an Alien Signal (or computed).
+ * No setter is provided.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * const doubleSignal = createComputed(() => countSignal() * 2);
+ * function Display() {
+ *   const count = useSignalValue(countSignal);
+ *   const double = useSignalValue(doubleSignal);
+ *   return <div>{count}, {double}</div>;
+ * }
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {TWritableSignal<T>} alienSignal - The signal to read.
+ * @returns {T} The current value.
+ */
+export function useSignalValue<T>(alienSignal: TWritableSignal<T>): T {
+  return useSyncExternalStore(
+    (callback) => {
+      const eff = effect(() => {
+        alienSignal()
+        callback()
+      })
+      return () => eff()
+    },
+    () => alienSignal(),
+    () => alienSignal()
+  )
+}
+
+/**
+ * React hook returning only a setter function for an Alien Signal.
+ * No current value is provided, similar to Jotai's useSetAtom.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * function Incrementor() {
+ *   const setCount = useSetSignal(countSignal);
+ *   return <button onClick={() => setCount((c) => c + 1)}>+1</button>;
+ * }
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {TWritableSignal<T>} alienSignal - The signal to write.
+ * @returns {(val: T | ((oldVal: T) => T)) => void} A setter function.
+ */
+export function useSetSignal<T>(alienSignal: TWritableSignal<T>): (val: T | ((oldVal: T) => T)) => void {
+  return useCallback((val) => {
+    if (typeof val === 'function') {
+      alienSignal((val as (oldVal: T) => T)(alienSignal()))
+    } else {
+      alienSignal(val)
+    }
+  }, [])
+}
+
+/**
+ * React hook for running a side effect whenever Alien Signals' dependencies
+ * used in `fn` change. The effect is cleaned up on component unmount.
+ *
+ * @example
+ * ```typescript
+ * function Logger() {
+ *   useSignalEffect(() => {
+ *     console.log('Signal changed:', someSignal());
+ *   });
+ *   return null;
+ * }
+ * ```
+ *
+ * @param {() => void} fn - The effect function to run.
+ */
+export function useSignalEffect(fn: () => void): void {
+  useEffect(() => {
+    const eff = effect(fn)
+    return () => eff()
+  }, [])
+}
+
+/**
+ * React hook to initialize a signal with a value when hydrating from server.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * useHydrateSignal(countSignal, 10);
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {TWritableSignal<T>} alienSignal - The signal to hydrate.
+ * @param {T} value - The value to hydrate the signal with.
+ */
+export function useHydrateSignal<T>(alienSignal: TWritableSignal<T>, value: T): void {
+  const hydratedSet = getHydratedSet(alienSignal)
+
+  if (hydratedSet.has(alienSignal)) return
+
+  hydratedSet.add(alienSignal)
+  alienSignal(value)
+}
+
+/**
+ * Utility function to get the current value and setter of an Alien Signal.
+ *
+ * @example
+ * ```typescript
+ * const countSignal = createSignal(0);
+ * const { value, setValue } = getSignal(countSignal);
+ * console.log(value()); // current value
+ * setValue(10); // set value to 10
+ * ```
+ *
+ * @template T - The type of the signal value.
+ * @param {TWritableSignal<T>} alienSignal - The signal to read/write.
+ * @returns {{ value: () => T; setValue: (val: T | ((oldVal: T) => T)) => void }} An object with `value` and `setValue`.
+ */
+export function getSignal<T>(alienSignal: TWritableSignal<T>) {
+  const setValue = (val: T | ((oldVal: T) => T)) => {
+    if (typeof val === 'function') {
+      alienSignal((val as (oldVal: T) => T)(alienSignal()))
+    } else {
+      alienSignal(val)
+    }
+  }
+
+  return {
+    value: () => alienSignal(),
+    setValue,
+  }
+}

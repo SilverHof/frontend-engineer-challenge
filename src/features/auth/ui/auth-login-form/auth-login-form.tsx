@@ -43,11 +43,6 @@ export const AuthLoginForm = reatomComponent(() => {
         autoComplete='email'
         isDisabled={isDisabled}
         {...bindFieldController(authLoginForm.fields.email)}
-        // То как должна выглядеть авторизация с бекендом, который отдает ошибки по полям
-        // error={authLoginFormServerError()?.email ?? bindFieldController(authLoginForm.fields.email).errorMessage}
-        // isInvalid={
-        //   !!authLoginFormServerError()?.email || bindFieldController(authLoginForm.fields.email).isInvalid || false
-        // }
       />
       <Input
         label={i18n.t('auth.login.password_label')}
